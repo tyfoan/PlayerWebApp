@@ -1,0 +1,13 @@
+{% if all_playlists %}
+<ul>
+    {% for playlist in all_playlists %}
+        <li>
+            <a href="{% url 'music:detail' playlist.id %}">{{ playlist.title_playlist }}</a>
+            <br>
+            <i style="margin-left: 30px; margin-bottom: 30px">{{playlist.date}}</i>
+        </li>
+    {% endfor %}
+</ul>
+{% else %}
+    {{ error_message }}
+{% endif %}

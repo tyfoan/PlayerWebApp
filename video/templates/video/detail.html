@@ -1,0 +1,13 @@
+{% if videos %}
+<ul>
+    {% for video in videos %}
+        <li>
+            <a href="#">{{ video.video_title }}</a>
+            <br>
+            <i style="margin-left: 30px; margin-bottom: 30px">{{video.date}}</i>
+        </li>
+    {% endfor %}
+</ul>
+{% else %}
+    {{ error_message }}
+{% endif %}
