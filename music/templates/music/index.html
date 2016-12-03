@@ -1,14 +1,43 @@
 {% extends 'music/base.html' %}
-{% block title %}Albums{% endblock%}
+{% block title %}Albums{% endblock %}
 {% block body %}
-    {% if all_albums %}
-    <h3>Here all my albums:</h3>
-    <ul>
+
+<div class="albums-container container-fluid">
+    <div class="row">
+
         {% for album in all_albums %}
-        <li><a href="{% url 'music:detail' album.id %}">{{ album.album_title }}</a></li>
+
+            <div class="col-sm-4">
+                <div class="thumbnail">
+
+                    <!--Album logo-->
+                    <a href="{% url 'music:detail' album.id %}">
+                        <img src="{{ album.album_logo.url }}" class="img-responsive">
+                    </a>
+                    <div class="caption">
+                        <h1>{{ album.album_title }}</h1>
+                        <h3>{{ album.artist }}</h3>
+                        <!--View details-->
+                        <a href="{% url 'music:detail' album.id %}" class="btn btn-primary btn-sm" role="button">Detail</a>
+
+                        <!-- Delete Album -->
+                        <form action="{% url 'music:album-delete' album.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="album_id" value="{{ album.id }}" />
+                            <button type="submit" class="btn btn-default btn-sm">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </form>
+
+                        <!--Favorite album-->
+                        <a href="#" class="btn btn-default btn-sm btn-favorite">
+                            <span class="glyphicon glyphicon-star {% if album.is_favorite %}active{%endif%}"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
-    {% else %}
-        <h3>You don't have any albums</h3>
-    {% endif %}
+
+    </div>
+</div>
 {% endblock %}
