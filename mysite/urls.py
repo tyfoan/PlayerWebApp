@@ -11,7 +11,6 @@ urlpatterns = [
     url(r'^$', IndexView.as_view()),
     url(r'^music/', include('music.urls')),
     url(r'^video/', include('video.urls')),
-
 ]
 
 if settings.DEBUG:

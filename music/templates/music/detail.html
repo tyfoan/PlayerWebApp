@@ -3,6 +3,40 @@
 {% block albums_active %}active{% endblock%}
 
 {% block body %}
+
+    <!--Modal window -->
+    <div class="modal fade" id="popUpWindow">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!--header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!--body-->
+                <div class="modal-body">
+                    <form action="{% url 'music:s-add' %}" method="post">
+                        {% csrf_token %}
+                        <!--{{ form.song_title.label}} {{ form.song_title.as_widget }}-->
+                        <!--{{ form.file_type }}-->
+
+                        <input type="text" value="" name="song_title">
+                        <input type="text" value="" name="file_type">
+                        <input type="hidden" value="{{ album.id }}" name="album_id">
+
+                        <input type="submit" value="Save" />
+                    </form>
+
+                </div>
+                <!--footer/button-->
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <div class="container-fluid song-container">
         <div class="row">
             <!--Left album info-->
@@ -26,7 +60,7 @@
 
                 <ul class="nav nav-pills" style="margin-bottom: 10px;">
                     <li role="presentation" class="active"><a href="#">View All</a></li>
-                    <li role="presentation"><a href="#">Add New Song</a></li>
+                    <li role="presentation"><a href="#" data-toggle="modal" data-target="#popUpWindow">Add New Song</a></li>
                 </ul>
 
                 <div class="panel panel-default">

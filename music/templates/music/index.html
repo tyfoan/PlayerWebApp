@@ -2,10 +2,30 @@
 {% block title %}Albums{% endblock %}
 {% block body %}
 
+
 <div class="albums-container container-fluid">
     <div class="row">
 
         {% for album in all_albums %}
+            <div id="modal-dialog" class="modal">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                        <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                         <h3>Are you sure</h3>
+                    </div>
+                    <div class="modal-body">
+                         <p>Do you want to submit the form?</p>
+                    </div>
+                    <div class="modal-footer">
+                      <a href="#" id="btnYes" class="btn confirm btn-danger">Yes</a>
+                      <a href="#" data-dismiss="modal" aria-hidden="true" class="btn secondary btn-default">No</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+
 
             <div class="col-sm-4">
                 <div class="thumbnail">
@@ -21,12 +41,11 @@
                         <a href="{% url 'music:detail' album.id %}" class="btn btn-primary btn-sm" role="button">Detail</a>
 
                         <!-- Delete Album -->
-                        <form action="{% url 'music:album-delete' album.id %}" method="post" style="display: inline;">
+                        <form action="{% url 'music:album-delete' album.id %}" id="modalForm" method="post" style="display: inline;">
                             {% csrf_token %}
-                            <input type="hidden" name="album_id" value="{{ album.id }}" />
-                            <button type="submit" class="btn btn-default btn-sm">
+                            <a href="#modal-dialog" class="modal-toggle btn btn-default btn-sm" data-toggle="modal" data-modal-type="confirm" data-modal-title="Delete Property" data-modal-text="Are you sure you want to delete {$property.address_string}?">
                                 <span class="glyphicon glyphicon-trash"></span>
-                            </button>
+                            </a>
                         </form>
 
                         <!--Favorite album-->
@@ -40,4 +59,19 @@
 
     </div>
 </div>
+
+<script>
+    $('#modal-dialog').on('show', function() {
+    var link = $(this).data('link'),
+        confirmBtn = $(this).find('.confirm');
+})
+
+
+$('#btnYes').click(function() {
+    $('form').submit();
+});
+</script>
+
 {% endblock %}
+
+<!--<input type="hidden" name="album_id" value="{{ album.id }}" id="albumId" id="modalHidden"/>-->
