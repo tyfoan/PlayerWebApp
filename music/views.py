@@ -40,7 +40,11 @@ class AlbumDelete(DeleteView):
 
 
 def create_song(request):
-    pass
+    if request.method == 'POST':
+        f = request.POST
+        song = Song(album=Album.objects.get(pk=int(f.get('album_id'))), song_title=f.get('song_title'), file_type=f.get('file_type'))
+        song.save()
+    return redirect(Album.get_absolute_url(song.album))
 
 
 
