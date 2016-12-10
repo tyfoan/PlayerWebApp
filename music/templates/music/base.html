@@ -67,5 +67,31 @@
 </nav>
 {% block body %}
 {% endblock %}
+
+
+<script>
+$('#modal-dialog-delete').on('show', function() {
+    var link = $(this).data('link');
+    confirmBtn = $(this).find('.confirm');
+});
+
+
+$('#btnYes').click(function() {
+    $('form').submit();
+});
+
+function delete_song(id) {
+        $.ajax({
+            url: "/music/song/"+ id +"/delete/",
+            type: "POST",
+            data: { "pk": id,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}' },
+            success: function(){
+                window.location.reload();
+            }
+
+        });
+    }
+</script>
 </body>
 </html>

@@ -18,11 +18,14 @@ urlpatterns = [
     url(r'album/(?P<pk>[0-9]+)/$', views.AlbumUpdate.as_view(), name='album-update'),
 
     # /music/2/delete/
-    url(r'^(?P<pk>[0-9]+)/delete$', views.AlbumDelete.as_view(), name='album-delete'),
+    url(r'^(?P<pk>[0-9]+)/delete/$', views.AlbumDelete.as_view(), name='album-delete'),
 
-    # /
-    #url(r'song/add/(?P<album_pk>[0-9]+)$', views.SongCreate.as_view(), name='song-add'),
+    # Modal window
+    # /music/song/add/
+    url(r'song/add/$', views.create_song, name='song-add'),
 
-    url(r'song/add/$', views.create_song, name='s-add'),
+    # /music/song/2/delete
+    url(r'^song/(?P<pk>[0-9]+)/delete/$', views.ajax_delete_song, name='song-delete'),
+
 ]
 

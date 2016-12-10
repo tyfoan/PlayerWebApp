@@ -12,7 +12,7 @@
                   <div class="modal-content">
                     <div class="modal-header">
                         <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
-                         <h3>Are you sure</h3>
+                        <h3>Are you sure</h3>
                     </div>
                     <div class="modal-body">
                          <p>Do you want to submit the form?</p>
@@ -43,7 +43,7 @@
                         <!-- Delete Album -->
                         <form action="{% url 'music:album-delete' album.id %}" id="modalForm" method="post" style="display: inline;">
                             {% csrf_token %}
-                            <a href="#modal-dialog" class="modal-toggle btn btn-default btn-sm" data-toggle="modal" data-modal-type="confirm" data-modal-title="Delete Property" data-modal-text="Are you sure you want to delete {$property.address_string}?">
+                            <a href="#modal-dialog" class="modal-toggle btn btn-default btn-sm" data-toggle="modal">
                                 <span class="glyphicon glyphicon-trash"></span>
                             </a>
                         </form>
@@ -71,7 +71,7 @@ $('#btnYes').click(function() {
     $('form').submit();
 });
 </script>
-
 {% endblock %}
 
 <!--<input type="hidden" name="album_id" value="{{ album.id }}" id="albumId" id="modalHidden"/>-->
+

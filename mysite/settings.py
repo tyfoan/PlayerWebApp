@@ -105,6 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 INTERNAL_IPS = ('127.0.0.1',)
 
+#APPEND_SLASH = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/

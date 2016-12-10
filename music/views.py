@@ -1,8 +1,7 @@
-from django.forms import modelformset_factory
-from django.template import RequestContext
-from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormMixin
+from django.http import HttpResponse
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import render, redirect, render_to_response
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.views import generic
 from django.views.generic import View
@@ -41,12 +40,17 @@ class AlbumDelete(DeleteView):
 
 def create_song(request):
     if request.method == 'POST':
-        f = request.POST
-        song = Song(album=Album.objects.get(pk=int(f.get('album_id'))), song_title=f.get('song_title'), file_type=f.get('file_type'))
-        song.save()
-    return redirect(Album.get_absolute_url(song.album))
+        song = SongForm(request.POST)
+        if song.is_valid():
+            song.save()
+            return redirect(song.cleaned_data['album'].get_absolute_url())
+    return redirect(song.cleaned_data['album'].get_absolute_url())
 
 
+def ajax_delete_song(request, pk):
+    if request.is_ajax():
+        Song.objects.get(pk=pk).delete()
+    return HttpResponse(request)
 
 class UserFormView(View):
     form_class = UserForm
