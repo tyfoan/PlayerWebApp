@@ -49,12 +49,12 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li class="">
-                    <a href="{% url 'music:index' %}">
+                    <a href="{% url 'music:album-add' %}">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Add album
                     </a>
                 </li>
                 <li class="">
-                    <a href="{% url 'music:index' %}">
+                    <a href="{% url 'music:register' %}">
                         <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp;Logout
                     </a>
                 </li>
@@ -67,5 +67,31 @@
 </nav>
 {% block body %}
 {% endblock %}
+
+
+<script>
+$('#modal-dialog-delete').on('show', function() {
+    var link = $(this).data('link');
+    confirmBtn = $(this).find('.confirm');
+});
+
+
+$('#btnYes').click(function() {
+    $('form').submit();
+});
+
+function delete_song(id) {
+        $.ajax({
+            url: "/music/song/"+ id +"/delete/",
+            type: "POST",
+            data: { "pk": id,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}' },
+            success: function(){
+                window.location.reload();
+            }
+
+        });
+    }
+</script>
 </body>
 </html>

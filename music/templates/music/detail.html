@@ -1,29 +1,157 @@
 {% extends 'music/base.html' %}
-{% block title %}Details{% endblock%}
+{% block title %}{{album}}{% endblock%}
+{% block albums_active %}active{% endblock%}
+
+
 {% block body %}
-{% if album %}
-    <img src="{{ album.album_logo }}" height="300" width="300">
-    <h1>{{ album.album_title }} </h1>
-    <h2>{{ album.artist }} </h2>
-    <p>Genre: {{ album.genre }} </p>
+<!--Modal delete window-->
+<div id="modal-dialog-delete" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                <h3>Are you sure</h3>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to submit the form?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="btnYes" class="btn confirm btn-danger">Yes</a>
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn secondary btn-default">No</a>
+            </div>
+        </div>
+    </div>
+</div>
 
-    {% if error_message %}
-        <p><strong>{{ error_message }}</strong></p>
-    {% endif %}
 
-    <form action="" method="post">
-        {% csrf_token %}
-        {% for song in album.song_set.all %}
-        <input type="radio" id="song{{ forloop.counter }}" name="song" value="{{song.id}}">
-        <label for="song{{ forloop.counter }}">
-            {{ song.song_title }}
-            {% if song.is_favorite %}
-                <img src="http://i.imgur.com/b9b13Rd.png">
-            {% endif %}
-        </label><br>
-        {% endfor %}
-        <input type="submit" value="Favorite">
-    </form>
-{% endif %}
-    <a href="{% url 'music:index' %}">back</a>
+<!--Modal create song window-->
+<div class="modal fade" id="popUpWindow">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!--header-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Создание песни</h4>
+            </div>
+            <!--body-->
+            <form action="{% url 'music:song-add' %}" method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Название песни</label>
+                        <input type="text" class="form-control" value="" name="song_title">
+                    </div>
+                    <div class="form-group">
+                        <label>Формат песни</label>
+                        <input type="text" class="form-control" value="" name="file_type">
+                    </div>
+                    <input type="hidden" value="{{ album.id }}" name="album">
+                </div>
+                <!--footer/button-->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" value="Save">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid song-container">
+    <div class="row">
+        <!--Left album info-->
+        <div class="col-sm-4 col-md-3">
+            <div class="thumbnail">
+                <div class="panel-body">
+                    <a href="{% url 'music:detail' album.id %}">
+                        {% if album.album_logo %}
+                        <img src="{{ album.album_logo.url }}" class="img-responsive">
+                        {% else %}
+                        <h3>No image to display</h3>
+                        {% endif %}
+                    </a>
+                    <h1>{{ album.album_title }}
+                        <small>{{ album.genre }}</small>
+                    </h1>
+                    <h2>{{ album.artist }}</h2>
+                </div>
+                <div class="caption">
+                    <a href="{% url 'music:album-update' album.id %}" class="btn btn-primary btn-sm"
+                       role="button">Edit</a>
+
+                    <form action="{% url 'music:album-delete' album.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <a href="#modal-dialog-delete" class="modal-toggle btn btn-default btn-sm" data-toggle="modal">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </form>
+
+                    <a href="#" class="btn btn-default btn-sm btn-favorite">
+                        <span class="glyphicon glyphicon-star {% if album.is_favorite %}active{%endif%}"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <!--Right song list-->
+        <div class="col-sm-8 col-md-9">
+
+            <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                <li role="presentation" class="active"><a href="#" data-toggle="modal" data-target="#popUpWindow">Add
+                    New Song</a></li>
+            </ul>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>All songs</h3>
+
+                    {% if error_message %}
+                    <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+
+                    <table class="table" id="refresh">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Audio File</th>
+                            <th>Favorite</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for song in album.song_set.all %}
+                        <tr>
+                            <td>{{ song.song_title }}</td>
+                            <td>
+                                <a target="_blank" href="{{ song.audio_file.url }}">
+                                    <button type="button" class="btn btn-success btn-xs">
+                                        <span class="glyphicon glyphicon-play"></span>&nbsp; Play
+                                    </button>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#" class="btn-favorite">
+                                    <span class="glyphicon glyphicon-star {% if song.is_favorite %}active{% endif %}"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <button onclick="delete_song({{song.id}})" class="btn btn-danger btn-xs">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
+<!--url: $(this).attr("action")-->

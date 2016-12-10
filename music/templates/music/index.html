@@ -1,14 +1,77 @@
 {% extends 'music/base.html' %}
-{% block title %}Albums{% endblock%}
+{% block title %}Albums{% endblock %}
 {% block body %}
-    {% if all_albums %}
-    <h3>Here all my albums:</h3>
-    <ul>
+
+
+<div class="albums-container container-fluid">
+    <div class="row">
+
         {% for album in all_albums %}
-        <li><a href="{% url 'music:detail' album.id %}">{{ album.album_title }}</a></li>
+            <div id="modal-dialog" class="modal">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                        <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                        <h3>Are you sure</h3>
+                    </div>
+                    <div class="modal-body">
+                         <p>Do you want to submit the form?</p>
+                    </div>
+                    <div class="modal-footer">
+                      <a href="#" id="btnYes" class="btn confirm btn-danger">Yes</a>
+                      <a href="#" data-dismiss="modal" aria-hidden="true" class="btn secondary btn-default">No</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+
+
+            <div class="col-sm-4">
+                <div class="thumbnail">
+
+                    <!--Album logo-->
+                    <a href="{% url 'music:detail' album.id %}">
+                        <img src="{{ album.album_logo.url }}" class="img-responsive">
+                    </a>
+                    <div class="caption">
+                        <h1>{{ album.album_title }}</h1>
+                        <h3>{{ album.artist }}</h3>
+                        <!--View details-->
+                        <a href="{% url 'music:detail' album.id %}" class="btn btn-primary btn-sm" role="button">Detail</a>
+
+                        <!-- Delete Album -->
+                        <form action="{% url 'music:album-delete' album.id %}" id="modalForm" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <a href="#modal-dialog" class="modal-toggle btn btn-default btn-sm" data-toggle="modal">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </form>
+
+                        <!--Favorite album-->
+                        <a href="#" class="btn btn-default btn-sm btn-favorite">
+                            <span class="glyphicon glyphicon-star {% if album.is_favorite %}active{%endif%}"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
-    {% else %}
-        <h3>You don't have any albums</h3>
-    {% endif %}
+
+    </div>
+</div>
+
+<script>
+    $('#modal-dialog').on('show', function() {
+    var link = $(this).data('link'),
+        confirmBtn = $(this).find('.confirm');
+})
+
+
+$('#btnYes').click(function() {
+    $('form').submit();
+});
+</script>
 {% endblock %}
+
+<!--<input type="hidden" name="album_id" value="{{ album.id }}" id="albumId" id="modalHidden"/>-->
+
