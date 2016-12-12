@@ -52,6 +52,21 @@ def ajax_delete_song(request, pk):
         Song.objects.get(pk=pk).delete()
     return HttpResponse(request)
 
+
+def ajax_like(request):
+    if request.is_ajax():
+        obj_type = request.POST['obj_type']
+        pk = request.POST['pk']
+        item_like = {'album': Album,
+                     'song': Song}[obj_type].objects.get(pk=pk)
+        if item_like.is_favorite:
+            item_like.is_favorite = False
+        else:
+            item_like.is_favorite = True
+        item_like.save()
+    return HttpResponse(request)
+
+
 class UserFormView(View):
     form_class = UserForm
     template_name = 'music/registration_form.html'

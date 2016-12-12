@@ -80,18 +80,29 @@ $('#btnYes').click(function() {
     $('form').submit();
 });
 
-function delete_song(id) {
-        $.ajax({
-            url: "/music/song/"+ id +"/delete/",
-            type: "POST",
-            data: { "pk": id,
-                    "csrfmiddlewaretoken": '{{ csrf_token }}' },
-            success: function(){
-                window.location.reload();
-            }
 
-        });
-    }
+
+function like(id, obj_type) {
+    $.ajax({
+        url: "/music/like/",
+        type: "POST",
+        data: { "pk": id,
+                "obj_type": obj_type,
+                "csrfmiddlewaretoken": '{{ csrf_token }}' },
+        success: function(){
+            switchStar = $('#'+obj_type+'_'+id).find('span');
+            if(switchStar.hasClass('glyphicon-star')){
+                switchStar.removeClass('glyphicon-star');
+                switchStar.addClass('glyphicon-star-empty');
+            }
+            else{
+                switchStar.removeClass('glyphicon-star-empty');
+                switchStar.addClass('glyphicon-star');
+            }
+        }
+    });
+}
+
 </script>
 </body>
 </html>

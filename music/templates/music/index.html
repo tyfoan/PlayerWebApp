@@ -49,8 +49,8 @@
                         </form>
 
                         <!--Favorite album-->
-                        <a href="#" class="btn btn-default btn-sm btn-favorite">
-                            <span class="glyphicon glyphicon-star {% if album.is_favorite %}active{%endif%}"></span>
+                        <a id="album_{{album.id}}" class="btn btn-default btn-sm btn-favorite" onclick="like({{album.id}}, 'album')">
+                            <span class="glyphicon glyphicon{% if album.is_favorite %}-star{% else %}-star-empty{%endif%}"></span>
                         </a>
                     </div>
                 </div>
@@ -61,15 +61,18 @@
 </div>
 
 <script>
-    $('#modal-dialog').on('show', function() {
+$('#modal-dialog').on('show', function() {
     var link = $(this).data('link'),
-        confirmBtn = $(this).find('.confirm');
+    confirmBtn = $(this).find('.confirm');
 })
 
 
 $('#btnYes').click(function() {
     $('form').submit();
 });
+
+
+$('.glyphicon.glyphicon-thumbs-up').style(
 </script>
 {% endblock %}
 

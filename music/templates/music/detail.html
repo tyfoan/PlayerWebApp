@@ -77,18 +77,20 @@
                     <h2>{{ album.artist }}</h2>
                 </div>
                 <div class="caption">
+                    <!--Edit album-->
                     <a href="{% url 'music:album-update' album.id %}" class="btn btn-primary btn-sm"
                        role="button">Edit</a>
 
+                    <!--Delete album-->
                     <form action="{% url 'music:album-delete' album.id %}" method="post" style="display: inline;">
                         {% csrf_token %}
                         <a href="#modal-dialog-delete" class="modal-toggle btn btn-default btn-sm" data-toggle="modal">
                             <span class="glyphicon glyphicon-trash"></span>
                         </a>
                     </form>
-
-                    <a href="#" class="btn btn-default btn-sm btn-favorite">
-                        <span class="glyphicon glyphicon-star {% if album.is_favorite %}active{%endif%}"></span>
+                    <!--Favorite album-->
+                    <a id="album_{{album.id}}" class="btn btn-default btn-sm btn-favorite" onclick="like({{album.id}}, 'album')">
+                        <span class="glyphicon glyphicon{% if album.is_favorite %}-star{% else %}-star-empty{%endif%}"></span>
                     </a>
                 </div>
             </div>
@@ -123,19 +125,20 @@
                         </thead>
                         <tbody>
                         {% for song in album.song_set.all %}
-                        <tr>
+                        <tr id="song_{{song.id}}">
                             <td>{{ song.song_title }}</td>
                             <td>
-                                <a target="_blank" href="{{ song.audio_file.url }}">
+                                <a target="_blank" href="{{ song.audio_file.url }}" >
                                     <button type="button" class="btn btn-success btn-xs">
                                         <span class="glyphicon glyphicon-play"></span>&nbsp; Play
                                     </button>
                                 </a>
                             </td>
                             <td>
-                                <a href="#" class="btn-favorite">
-                                    <span class="glyphicon glyphicon-star {% if song.is_favorite %}active{% endif %}"></span>
+                                <a href="#" class="btn-favorite" onclick="like({{song.id}}, 'song')">
+                                    <span id="song_{{ song.id }}" class="glyphicon glyphicon{% if song.is_favorite %}-star{% else %}-star-empty{% endif %}"></span>
                                 </a>
+
                             </td>
                             <td>
                                 <button onclick="delete_song({{song.id}})" class="btn btn-danger btn-xs">
@@ -153,5 +156,20 @@
     </div>
 </div>
 
+<script>
+    function delete_song(id) {
+        $.ajax({
+            url: "/music/song/"+ id +"/delete/",
+            type: "POST",
+            data: { "pk": id,
+                    "csrfmiddlewaretoken": '{{ csrf_token }}' },
+            success: function(){
+                $('#song_'+id).remove();
+            }
+
+        });
+    }
+
+
+</script>
 {% endblock %}
-<!--url: $(this).attr("action")-->

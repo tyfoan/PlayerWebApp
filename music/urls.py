@@ -27,5 +27,7 @@ urlpatterns = [
     # /music/song/2/delete
     url(r'^song/(?P<pk>[0-9]+)/delete/$', views.ajax_delete_song, name='song-delete'),
 
+    #/like/2
+    url(r'^like/$', views.ajax_like, name='like'),
 ]
 
